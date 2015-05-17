@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace PervasiveDigital.Onboarding.DefaultSecurityProviders
+namespace PervasiveDigital.Onboarding.ManagedSecurityProviders
 {
     public static class BlockTea
     {

@@ -29,11 +29,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BigInt.cs" />
-    <Compile Include="BlockTea.cs" />
-    <Compile Include="DiffieHellman.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StrongNumberProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.SPOT.Native" />

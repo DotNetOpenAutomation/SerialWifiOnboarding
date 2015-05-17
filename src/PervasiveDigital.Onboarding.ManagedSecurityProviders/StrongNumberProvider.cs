@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace PervasiveDigital.Onboarding.DefaultSecurityProviders
+namespace PervasiveDigital.Onboarding.ManagedSecurityProviders
 {
     internal class StrongNumberProvider
     {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DiffieHellmanTest
+namespace ManagedProviderTest
 {
     internal class Resources
     {
@@ -19,7 +19,7 @@ namespace DiffieHellmanTest
             {
                 if ((Resources.manager == null))
                 {
-                    Resources.manager = new System.Resources.ResourceManager("DiffieHellmanTest.Resources", typeof(Resources).Assembly);
+                    Resources.manager = new System.Resources.ResourceManager("ManagedProviderTest.Resources", typeof(Resources).Assembly);
                 }
                 return Resources.manager;
             }

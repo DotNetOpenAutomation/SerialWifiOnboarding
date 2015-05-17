@@ -2,14 +2,23 @@ using System;
 using System.Text;
 using Microsoft.SPOT;
 
-using PervasiveDigital.Onboarding.DefaultSecurityProviders;
+using PervasiveDigital.Onboarding.ManagedSecurityProviders;
 
-namespace DiffieHellmanTest
+namespace ManagedProviderTest
 {
     public class Program
     {
         public static void Main()
         {
+            // The managed providers exist to help out NETMF deployments where the security
+            //   routines are not in the firmware (e.g., early versions of Molecule.Net)
+            // These routines will provide the necessary security support for onboarding,
+            //   with important caveats:
+            //   1) These routines are very slow
+            //   2) There are known weaknesses - for instance, the RNG is the default .net RNG and not the crypto RNG. There may be other algorithmic weaknesses
+            //   3) These routines are very, very slow - expect 30-40 seconds for each Diffie-Hellman call on and STM32F11
+            //   
+
             Debug.Print("Starting...");
 
             DiffieHellman server = new DiffieHellman(128).GenerateRequest();
