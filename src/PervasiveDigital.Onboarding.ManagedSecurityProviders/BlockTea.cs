@@ -53,54 +53,64 @@ namespace PervasiveDigital.Onboarding.ManagedSecurityProviders
             return result;
         }
 
-        public static void Process(UInt32[] v, int n, UInt32[] key)
+        public static void Encrypt(UInt32[] v, UInt32[] key)
+        {
+            if (v == null)
+                throw new ArgumentNullException("v");
+            if (key.Length != 4)
+                throw new ArgumentException("key must be 16 bytes");
+            
+            int n = v.Length;
+            if (n == 0)
+                return;
+            UInt32 y, z, sum;
+            UInt32 p, rounds, e;
+            // encoding
+            rounds = (UInt32)(6 + 52 / n);
+            sum = 0;
+            z = v[n - 1];
+            do
+            {
+                sum += Delta;
+                e = (sum >> 2) & 3;
+                for (p = 0; p < n - 1; p++)
+                {
+                    y = v[p + 1];
+                    z = v[p] += (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z))); // MX
+                }
+                y = v[0];
+                z = v[n - 1] += (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z))); // MX
+            } while (--rounds > 0);
+        }
+
+        public static void Decrypt(UInt32[] v, UInt32[] key)
         {
             if (v == null)
                 throw new ArgumentNullException("v");
             if (key.Length != 4)
                 throw new ArgumentException("key must be 16 bytes");
 
+            int n = v.Length;
+            if (n == 0)
+                return;
             UInt32 y, z, sum;
             UInt32 p, rounds, e;
-            if (n > 1)
+            // decoding
+            rounds = (UInt32)(6 + 52 / n);
+            sum = rounds * Delta;
+            y = v[0];
+            do
             {
-                // encoding
-                rounds = (UInt32)(6 + 52 / n);
-                sum = 0;
+                e = (sum >> 2) & 3;
+                for (p = (UInt32)n - 1; p > 0; p--)
+                {
+                    z = v[p - 1];
+                    y = v[p] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z))); // MX
+                }
                 z = v[n - 1];
-                do
-                {
-                    sum += Delta;
-                    e = (sum >> 2) & 3;
-                    for (p = 0; p < n - 1; p++)
-                    {
-                        y = v[p + 1];
-                        z = v[p] += (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z))); // MX
-                    }
-                    y = v[0];
-                    z = v[n - 1] += (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z))); // MX
-                } while (--rounds > 0);
-            }
-            else if (n < -1)
-            {
-                // decoding
-                n = -n;
-                rounds = (UInt32)(6 + 52 / n);
-                sum = rounds * Delta;
-                y = v[0];
-                do
-                {
-                    e = (sum >> 2) & 3;
-                    for (p = (UInt32)n - 1; p > 0; p--)
-                    {
-                        z = v[p - 1];
-                        y = v[p] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z))); // MX
-                    }
-                    z = v[n - 1];
-                    y = v[0] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z))); // MX
-                    sum -= Delta;
-                } while (--rounds > 0);
-            }
+                y = v[0] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z))); // MX
+                sum -= Delta;
+            } while (--rounds > 0);
         }
     }
 }

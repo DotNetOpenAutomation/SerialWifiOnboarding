@@ -47,12 +47,12 @@ namespace ManagedProviderTest
             var bytes = BlockTea.StringToUIntArray(cleartext);
             Dump("cleartext", bytes);
 
-            BlockTea.Process(bytes, bytes.Length, serverK);
+            BlockTea.Encrypt(bytes, serverK);
             Dump("cipher", bytes);
 
             // bytes sent to client 
 
-            BlockTea.Process(bytes, -bytes.Length, clientK);
+            BlockTea.Decrypt(bytes, clientK);
             Dump("cleartext recovered", bytes);
 
             var deciphered = BlockTea.UIntArrayToBytes(bytes);
